@@ -2,7 +2,7 @@ package com.rokt.assessment.fileprocessor.controller;
 
 
 import com.rokt.assessment.fileprocessor.models.EntryFilterRequest;
-import com.rokt.assessment.fileprocessor.process.EntryPayload;
+import com.rokt.assessment.fileprocessor.models.EntryPayload;
 import com.rokt.assessment.fileprocessor.process.FileProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

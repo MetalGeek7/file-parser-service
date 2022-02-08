@@ -1,4 +1,4 @@
-package com.rokt.assessment.fileprocessor.process;
+package com.rokt.assessment.fileprocessor.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

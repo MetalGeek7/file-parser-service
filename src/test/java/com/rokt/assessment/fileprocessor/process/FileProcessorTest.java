@@ -1,6 +1,7 @@
 package com.rokt.assessment.fileprocessor.process;
 
 import com.rokt.assessment.fileprocessor.models.EntryFilterRequest;
+import com.rokt.assessment.fileprocessor.models.EntryPayload;
 import com.rokt.assessment.fileprocessor.util.FileUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
