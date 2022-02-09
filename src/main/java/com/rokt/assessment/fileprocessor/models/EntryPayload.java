@@ -8,7 +8,6 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 public class EntryPayload {
-
     String eventTime;
     String emailId;
     UUID sessionId;
