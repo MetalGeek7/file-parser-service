@@ -1,6 +1,7 @@
 FROM maven:3.6.3-openjdk-11-slim as BUILDER
 ARG VERSION=0.0.1
-ENV PATH "$PATH:/bin/"
+ENV PATH="$PATH:/bin/"
+ENV RESOURCE_DIR="/app/test-files/"
 WORKDIR /build/
 COPY pom.xml /build/
 COPY src /build/src/
@@ -8,13 +9,11 @@ COPY src /build/src/
 RUN mvn clean package
 COPY target/file-processor-*.jar target/file-processor.jar
 
-#FROM alpine:latest
 FROM openjdk:8-jdk-alpine
 WORKDIR /app/
 # This path must exist as it is used as a mount point for testing
 # Ensure your app is loading files from this location
 RUN mkdir /app/test-files
-#COPY . .
 
 COPY --from=BUILDER /build/target/file-processor.jar /app/
 CMD ["java","-jar","/app/file-processor.jar"]
