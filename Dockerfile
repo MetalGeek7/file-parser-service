@@ -1,13 +1,12 @@
 FROM maven:3.6.3-openjdk-11-slim as BUILDER
 ARG VERSION=0.0.1
 ENV PATH="$PATH:/bin/"
-ENV RESOURCE_DIR="/app/test-files/"
 WORKDIR /build/
 COPY pom.xml /build/
 COPY src /build/src/
 
 RUN mvn clean package
-COPY target/file-processor-*.jar target/file-processor.jar
+COPY target/file-processor-${VERSION}-SNAPSHOT.jar target/file-processor.jar
 
 FROM openjdk:8-jdk-alpine
 WORKDIR /app/

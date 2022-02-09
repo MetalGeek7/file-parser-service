@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class FileProcessingService {
 
     private final FileUtil fileUtil;
 
-    @Value("${data-directory.prefix:/app/test-files/}")
+    @Value("${data-directory.prefix}")
     private String APP_RESOURCE_PATH_PREFIX;
 
     public FileProcessingService(FileUtil util) {
@@ -42,6 +43,7 @@ public class FileProcessingService {
 
         List<EntryPayload> validEntries = new ArrayList<>();
         try {
+            long startTime = Instant.now().toEpochMilli();
             File file = fileUtil.loadFile(Paths.get(APP_RESOURCE_PATH_PREFIX, request.getFilename()).toString());
             if (file == null) {
                 log.error("File: " + request.getFilename() + " not found in app server");
@@ -52,16 +54,16 @@ public class FileProcessingService {
 
             String fileEntry;
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-            while ((fileEntry =  bufferedReader.readLine()) != null) {
+            while ((fileEntry = bufferedReader.readLine()) != null) {
                 Optional<OffsetDateTime> entryDateTimeOptional = getEntryDateTime(fileEntry);
-                if (!entryDateTimeOptional.isPresent()) continue;
-                if (checkEntryTimeWithinRange(start, end, entryDateTimeOptional.get())) {
-                    validEntries.add(parseEntry(fileEntry));
+                if (entryDateTimeOptional.isPresent()) {
+                    if (checkEntryTimeWithinRange(start, end, entryDateTimeOptional.get())) {
+                        validEntries.add(parseEntry(fileEntry));
+                    }
+                    if (checkEntryTimeBeyondEndTime(end, entryDateTimeOptional.get())) break;
                 }
-                if (checkEntryTimeBeyondEndTime(end, entryDateTimeOptional.get())) break;
             }
-
-            log.debug("Total entries parsed and filtered = {}", validEntries.size());
+            log.info("{} entries parsed in {} ms", validEntries.size(), Instant.now().toEpochMilli() - startTime);
 
         } catch (Exception e) {
             log.error("Exception while parsing file entries: {}", e.toString());
